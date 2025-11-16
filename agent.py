@@ -26,8 +26,7 @@ response = client.responses.create(
     model="gpt-5",
     input=[
         {"role": "user", "content": "What is the weather like in Paris today?"},
-    ],
-    tools=tools,
+    ]
 )
 
-print(response.output[0].to_json())
+print(response.output_text)
