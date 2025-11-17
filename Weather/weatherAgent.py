@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, Iterable, List
 from openai import OpenAI
 from openai.types.responses import Response, ResponseFunctionToolCall
 
-from weather import get_alerts, get_forecast
+from Weather.weather import get_alerts, get_forecast
 
 client = OpenAI()
 
