@@ -1,4 +1,6 @@
 # main.py
+import json
+
 from openai import OpenAI
 from tools import add_numbers, ADD_NUMBERS_TOOL  # <- import from tools.py
 
@@ -29,7 +31,14 @@ def run_agent(user_input: str) -> str:
     if msg.type == "tool_call":
         tool_call = msg  # depending on your exact SDK shape, adapt this
         tool_name = tool_call.name
-        tool_args = tool_call.arguments  # already parsed dict in new SDKs
+        tool_args = tool_call.arguments
+
+        # Depending on the SDK version, arguments can be either a dict or a JSON string.
+        if isinstance(tool_args, str):
+            try:
+                tool_args = json.loads(tool_args)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"Invalid tool arguments: {exc}") from exc
 
         tool_result = handle_tool_call(tool_name, tool_args)
 
