@@ -1,13 +1,18 @@
-def get_lucky_number():
-    return 42
-def get_weather():
-    return "Weather is fantastic!"
+from datetime import date
+
+
+def get_date():
+    return date.today()
+
+
+def get_activities():
+    return "Activities"
 
 tools = [
     {
         "type": "function",
-        "name": "get_lucky_number",
-        "description": "Return a hardcoded lucky number",
+        "name": "get_date",
+        "description": "get_date",
         "parameters": {
             "type": "object",
             "properties": {},
@@ -15,16 +20,14 @@ tools = [
         },
     },
     
-     {
+    {
         "type": "function",
-        "name": "get_weather",
-        "description": "Return a hardcoded weather temperature",
+        "name": "get_activities",
+        "description": "get_activities",
         "parameters": {
             "type": "object",
             "properties": {},
             "required": [],
         },
     },
-   
-   
 ]

@@ -2,63 +2,77 @@
 import json
 
 from openai import OpenAI
-from tools import add_numbers, ADD_NUMBERS_TOOL  # <- import from tools.py
+from Tools import get_date,tools, get_activities
+
+# Prompts: What is the weather?
+# What is my mileage of the last 7 days 
 
 client = OpenAI()
 
-def handle_tool_call(name: str, arguments: dict) -> str:
-    """Route tool calls from the model to your local Python functions."""
-    if name == "add_numbers":
-        return add_numbers(arguments)
 
-    # If you add more tools later, extend this if/elif block:
-    # elif name == "other_tool":
-    #     return other_tool(arguments)
+# First call: Ask the model to use the tool 
 
-    raise ValueError(f"Unknown tool: {name}")
+context = [
+    {
+        "role": "user",
+        "content":"Plese call get_date and tell me the result"
+        
+    }
+]
 
-def run_agent(user_input: str) -> str:
-    # 1) Ask the model; let it decide whether to call a tool
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=[{"role": "user", "content": user_input}],
-        tools=[ADD_NUMBERS_TOOL],  # <- imported tool definition
-    )
+response = client.responses.create(
+    model="o4-mini",
+    input=context, 
+    tools=tools
+    
+)
 
-    msg = response.output[0].content[0]
+#print("first response output (Should include a function calll): ")
+#print(response.output)
 
-    # 2) If the model called a tool, execute it locally
-    if msg.type == "tool_call":
-        tool_call = msg  # depending on your exact SDK shape, adapt this
-        tool_name = tool_call.name
-        tool_args = tool_call.arguments
+#find the Function call in response.output 
+function_call = None 
+for item in response.output:
+    # Look for the first item whose type is "function_call"
+    if item.type == "function_call":
+        function_call = item
+        break
 
-        # Depending on the SDK version, arguments can be either a dict or a JSON string.
-        if isinstance(tool_args, str):
-            try:
-                tool_args = json.loads(tool_args)
-            except json.JSONDecodeError as exc:
-                raise ValueError(f"Invalid tool arguments: {exc}") from exc
 
-        tool_result = handle_tool_call(tool_name, tool_args)
+if function_call is None:
+    raise RuntimeError("Model did not call any function")
 
-        # 3) Send tool result back to the model if you want a final answer
-        followup = client.responses.create(
-            model="gpt-4.1-mini",
-            input=[
-                {"role": "user", "content": user_input},
-                {
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "name": tool_name,
-                    "content": tool_result,
-                },
-            ],
-        )
-        return followup.output_text
+#there are not arugments on this one, this is probably not needed but normally would be? 
 
-    # If no tool call, just return the model’s reply
-    return response.output_text
+#args = json.loads(function_call.arguments)
 
-if __name__ == "__main__":
-    print(run_agent("Add 3 and 5 for me."))
+#Run the local function 
+print(item.name)
+
+if item.name == "get_date":
+    tool_result = get_date()
+    
+elif item.name == "get_activites":
+    tool_result = get_activites()
+
+#So, adding the llm response to the context  (this could happen above right?)
+context += response.output 
+
+#Add the functon_call_output with the results 
+context.append ({
+        "type":"function_call_output",
+        "call_id": function_call.call_id, 
+        "output": str(tool_result)
+    })
+
+response2 = client.responses.create(
+    model="o4-mini",
+    input=context, 
+    tools=tools,
+)
+
+print("\n Final Answer from the model: ")
+print(response2.output_text)
+
+
+
