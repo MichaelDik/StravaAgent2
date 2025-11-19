@@ -15,7 +15,7 @@ client = OpenAI()
 context = [
     {
         "role": "user",
-        "content":"Plese call get_date and tell me the result"
+        "content":"Plese call get_activities and tell me the result"
         
     }
 ]
@@ -42,20 +42,17 @@ for item in response.output:
 if function_call is None:
     raise RuntimeError("Model did not call any function")
 
-#there are not arugments on this one, this is probably not needed but normally would be? 
 
-#args = json.loads(function_call.arguments)
-
-#Run the local function 
-print(item.name)
+#Run the local function and add output to tool_result
+print(f"Tool Called name is: {item.name}")
 
 if item.name == "get_date":
     tool_result = get_date()
     
-elif item.name == "get_activites":
-    tool_result = get_activites()
+elif item.name == "get_activities":
+    tool_result = get_activities()
 
-#So, adding the llm response to the context  (this could happen above right?)
+#Adding the llm response to the context  (this could happen above right?)
 context += response.output 
 
 #Add the functon_call_output with the results 
