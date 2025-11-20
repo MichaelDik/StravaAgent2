@@ -2,7 +2,7 @@
 import json
 
 from openai import OpenAI
-from Tools import get_date,tools, get_activities
+from Tools import get_date, get_activities,get_nyc_weather, tools
 
 # Prompts: What is the weather?
 # What is my mileage of the last 7 days 
@@ -11,11 +11,12 @@ client = OpenAI()
 
 
 # First call: Ask the model to use the tool 
+prompt = input("Please input your prompt: ")
 
 context = [
     {
         "role": "user",
-        "content":"Plese call get_activities and tell me the result"
+        "content":f"Pleasse call {prompt} and tell me the result"
         
     }
 ]
@@ -51,6 +52,8 @@ if item.name == "get_date":
     
 elif item.name == "get_activities":
     tool_result = get_activities()
+elif item.name =="get_nyc_weather":
+    tool_result= get_nyc_weather()
 
 #Adding the llm response to the context  (this could happen above right?)
 context += response.output 

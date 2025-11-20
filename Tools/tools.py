@@ -13,7 +13,7 @@ tools = [
     {
         "type": "function",
         "name": "get_date",
-        "description": "get_date",
+        "description": "When asked what the date is use this tool ",
         "parameters": {
             "type": "object",
             "properties": {},
@@ -24,7 +24,7 @@ tools = [
     {
         "type": "function",
         "name": "get_activities",
-        "description": "get_activities",
+        "description": "When asked for recent running activiteis use this tool",
         "parameters": {
             "type": "object",
             "properties": {},
@@ -35,7 +35,7 @@ tools = [
      {
         "type": "function",
         "name": "get_nyc_weather",
-        "description": "get_nyc_weather",
+        "description": "When asked about the weather use this tool",
         "parameters": {
             "type": "object",
             "properties": {},
