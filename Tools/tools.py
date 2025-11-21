@@ -43,3 +43,11 @@ tools = [
         },
     },
 ]
+
+def run_tools(tool_name):
+    if tool_name == "get_date":
+        return get_date()
+    elif tool_name == "get_activities":
+        return get_activities()
+    elif tool_name =="get_nyc_weather":
+        return get_nyc_weather()

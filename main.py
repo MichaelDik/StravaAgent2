@@ -2,7 +2,7 @@
 import json
 
 from openai import OpenAI
-from Tools import get_date, get_activities,get_nyc_weather, tools
+from Tools import get_date, get_activities,get_nyc_weather, run_tools, tools
 
 # Prompts: What is the weather?
 # What is my mileage of the last 7 days 
@@ -10,16 +10,7 @@ from Tools import get_date, get_activities,get_nyc_weather, tools
 client = OpenAI()
 
 
-
-
-
-
-
-
-#print("first response output (Should include a function calll): ")
-#print(response.output)
-
-#find the Function call in response.output 
+#Loop to prompt the user for tool calls, will loop until a tool is selected  
 function_call = None 
 while function_call == None:
     
@@ -51,20 +42,16 @@ while function_call == None:
 
 
     if function_call is None:
-        print ("Model did not call any function, please input a function")
+        print ("Im sorry, I can only call three tools right now: pleae tell mew if you want Weather, Activites or Date: ")
         
 
 
 
-#Run the local function and add output to tool_result
+#Print name of Tool
 print(f"Tool Called name is: {item.name}")
 
-if item.name == "get_date":
-    tool_result = get_date()
-elif item.name == "get_activities":
-    tool_result = get_activities()
-elif item.name =="get_nyc_weather":
-    tool_result= get_nyc_weather()
+#Call the function to run the tools
+tool_result = run_tools(item.name)
 
 #Adding the llm response to the context  (this could happen above right?)
 context += response.output 
