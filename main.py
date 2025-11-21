@@ -10,38 +10,50 @@ from Tools import get_date, get_activities,get_nyc_weather, tools
 client = OpenAI()
 
 
-# First call: Ask the model to use the tool 
-prompt = input("Please input your prompt: ")
 
-context = [
-    {
-        "role": "user",
-        "content":f"Pleasse call {prompt} and tell me the result"
-        
-    }
-]
 
-response = client.responses.create(
-    model="o4-mini",
-    input=context, 
-    tools=tools
-    
-)
+
+
+
 
 #print("first response output (Should include a function calll): ")
 #print(response.output)
 
 #find the Function call in response.output 
 function_call = None 
-for item in response.output:
-    # Look for the first item whose type is "function_call"
-    if item.type == "function_call":
-        function_call = item
-        break
+while function_call == None:
+    
+    # Set Prompt from User
+    prompt = input("Please input your prompt: ")    
+    
+    #Set Context
+    
+    context = [
+    {
+        "role": "user",
+        "content":f"Please call {prompt} and tell me the result"
+        
+    }
+    ]
+    
+    # Call LLM
+    response = client.responses.create(
+    model="o4-mini",
+    input=context, 
+    tools=tools
+    )
+    
+    for item in response.output:
+        # Look for the first item whose type is "function_call"
+        if item.type == "function_call":
+            function_call = item
+            break
 
 
-if function_call is None:
-    raise RuntimeError("Model did not call any function")
+    if function_call is None:
+        print ("Model did not call any function, please input a function")
+        
+
 
 
 #Run the local function and add output to tool_result
@@ -49,7 +61,6 @@ print(f"Tool Called name is: {item.name}")
 
 if item.name == "get_date":
     tool_result = get_date()
-    
 elif item.name == "get_activities":
     tool_result = get_activities()
 elif item.name =="get_nyc_weather":
