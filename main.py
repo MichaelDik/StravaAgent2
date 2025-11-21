@@ -40,11 +40,13 @@ while function_call == None:
             function_call = item
             break
 
-
+    # No Tool was selected 
     if function_call is None:
-        print ("Im sorry, I can only call three tools right now: pleae tell mew if you want Weather, Activites or Date: ")
+        print ("Im sorry, I can only call three tools right now: please tell mew if you want Weather, Activites or Date: ")
         
 
+
+conversationEnded = None
 
 
 #Print name of Tool
@@ -71,6 +73,13 @@ response2 = client.responses.create(
 
 print("\n Final Answer from the model: ")
 print(response2.output_text)
+
+while conversationEnded != 'q':
+
+    conversationEnded = input("\n Is there anything else you would like me to do? (hit q to exit) ") 
+    
+    
+
 
 
 
