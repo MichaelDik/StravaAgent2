@@ -6,8 +6,10 @@ from .Weather.nyc_weather import get_nyc_weather
 def get_date():
     return date.today()
 
+
 def get_activities():
     return "Activities"
+
 
 tools = [
     {
@@ -20,19 +22,17 @@ tools = [
             "required": [],
         },
     },
-    
     {
         "type": "function",
         "name": "get_activities",
-        "description": "When asked for recent running activiteis use this tool",
+        "description": "When asked for recent running activities use this tool",
         "parameters": {
             "type": "object",
             "properties": {},
             "required": [],
         },
     },
-    
-     {
+    {
         "type": "function",
         "name": "get_nyc_weather",
         "description": "When asked about the weather use this tool",
@@ -44,10 +44,11 @@ tools = [
     },
 ]
 
+
 def run_tools(tool_name):
     if tool_name == "get_date":
         return get_date()
     elif tool_name == "get_activities":
         return get_activities()
-    elif tool_name =="get_nyc_weather":
+    elif tool_name == "get_nyc_weather":
         return get_nyc_weather()

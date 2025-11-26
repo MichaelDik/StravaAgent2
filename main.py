@@ -1,6 +1,6 @@
 """Entry point for the simple tool-calling CLI."""
 
-from openai import OpenAI
+from openai import OpenAIwea
 from Tools import run_tools, tools
 
 
