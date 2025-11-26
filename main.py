@@ -12,8 +12,12 @@ def run_agent() -> None:
     context = []
     response = None
 
+    # Processing Loop
+    # Exit Condition is an input of q in initial prompt or subsequent ones.
     while function_call is None:
         prompt = input("Please input your prompt: ")
+        if prompt == "q":
+            break
         context = [
             {
                 "role": "user",
@@ -21,7 +25,11 @@ def run_agent() -> None:
             }
         ]
 
-        response = client.responses.create(model="o4-mini", input=context, tools=tools)
+        response = client.responses.create(
+            model="o4-mini",
+            input=context,
+            tools=tools,
+        )
 
         for item in response.output:
             if item.type == "function_call":
@@ -30,7 +38,8 @@ def run_agent() -> None:
 
         if function_call is None:
             print(
-                "I'm sorry, I can only call three tools right now: Weather, Activities, or Date."
+                "I'm sorry, I can only call three tools right now: Weather, "
+                "Activities, or Date."
             )
 
     tool_result = run_tools(function_call.name)
@@ -59,7 +68,7 @@ def run_agent() -> None:
     conversation_ended = None
     while conversation_ended != "q":
         conversation_ended = input(
-            "\n Is there anything else you would like me to do? (hit q to exit) "
+            "\n Is there anything else you would like me to do? " "(hit q to exit) "
         )
 
 
